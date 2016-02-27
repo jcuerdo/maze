@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityStandardAssets.Characters.ThirdPerson;
 
 public class characterCollisions : MonoBehaviour {
 
 	private bool finished = false;
 	private bool onMenu = true;
-	[SerializeField] float time = 0;
+
+	[SerializeField] int time = 15;
+	[SerializeField] int timeLow = 5;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -13,15 +17,15 @@ public class characterCollisions : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		this.updateTime();
+
 	}
 
 	void OnCollisionEnter(Collision collision)
 	{
 		if(collision.collider.name == "end")
 		{
-			finished = true;
-			this.finishLevel();
+			this.finishLevel(true);
 		}
 	}
 
@@ -37,8 +41,45 @@ public class characterCollisions : MonoBehaviour {
 		}
 	}
 
-	void finishLevel()
+	void finishLevel(bool success = false)
 	{
-		
+		if(!this.finished){
+			this.finished = true;
+			if(success){
+				this.finishSuccess();
+			}
+			else{
+				this.finishFail();
+			}
+		}
+
+	}
+
+	private void finishSuccess(){
+		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().Move(Vector3.right * 10,false,true);
+	}
+
+	private void finishFail(){
+		while(true)
+		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().Move(Vector3.right * 10,true,false);
+	}
+
+	void updateTime()
+	{
+		int time = (int)this.time - (int)Time.realtimeSinceStartup;
+
+		if(time < timeLow)
+		{
+			GameObject.Find("time").GetComponent<TextMesh>().color = Color.red;
+		}
+
+		if(time < 0)
+		{
+			this.finishLevel(false);
+		}
+		else
+		{
+			GameObject.Find("time").GetComponent<TextMesh>().text = time.ToString();
+		}
 	}
 }
