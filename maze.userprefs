@@ -1,13 +1,13 @@
-﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Standard Assets/Utility/PlatformSpecificContent.cs">
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/characterCollisions.cs">
     <Files>
-      <File FileName="Assets/Standard Assets/Characters/ThirdPersonCharacter/Scripts/ThirdPersonUserControl.cs" Line="45" Column="48" />
-      <File FileName="Assets/Standard Assets/Characters/ThirdPersonCharacter/Scripts/ThirdPersonCharacter.cs" Line="1" Column="1" />
-      <File FileName="Assets/Standard Assets/Characters/ThirdPersonCharacter/Scripts/AICharacterControl.cs" Line="1" Column="1" />
-      <File FileName="Assets/Standard Assets/CrossPlatformInput/Scripts/MobileControlRig.cs" Line="1" Column="1" />
-      <File FileName="Assets/Standard Assets/CrossPlatformInput/Scripts/TouchPad.cs" Line="63" Column="37" />
-      <File FileName="Assets/Standard Assets/Utility/PlatformSpecificContent.cs" Line="103" Column="1" />
+      <File FileName="Assets/characterCollisions.cs" Line="8" Column="34" />
+      <File FileName="Assets/Scenes/Menu/Scripts/MenuSceneLoader.cs" Line="18" Column="1" />
+      <File FileName="Assets/Scenes/Menu/Scripts/SceneAndURLLoader.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scenes/Menu/Scripts/ReturnToMainMenu.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scenes/Menu/Scripts/PauseMenu.cs" Line="39" Column="35" />
+      <File FileName="Assets/Standard Assets/Characters/ThirdPersonCharacter/Scripts/ThirdPersonCharacter.cs" Line="10" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

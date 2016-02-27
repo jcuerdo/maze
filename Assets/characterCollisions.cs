@@ -5,7 +5,7 @@ using UnityStandardAssets.Characters.ThirdPerson;
 public class characterCollisions : MonoBehaviour {
 
 	private bool finished = false;
-	private bool onMenu = true;
+	private bool instructions = false;
 
 	[SerializeField] int time = 15;
 	[SerializeField] int timeLow = 5;
@@ -18,7 +18,6 @@ public class characterCollisions : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		this.updateTime();
-
 	}
 
 	void OnCollisionEnter(Collision collision)
@@ -31,17 +30,25 @@ public class characterCollisions : MonoBehaviour {
 
 	void OnGUI()
 	{
-		if(onMenu)
-		{
-			//Show menu
-		}
 		if(finished)
 		{
-			//Show button
+			GUIStyle button_style = new GUIStyle(GUI.skin.button);
+			button_style.fontSize = Screen.width/30;
+
+			GUI.Box(new Rect (Screen.width/4,Screen.height/4 - 5, Screen.width/2 , Screen.height/1.5f ), this.getLevel().ToString() );
+
+			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), "Start Level",button_style )) 
+			{
+				Application.LoadLevel(this.getLevel());
+			}
+			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8*2) + 20,Screen.width/2 - Screen.width/6,Screen.height/8), "Quit",button_style )) 
+			{
+				Application.Quit();
+			}
 		}
 	}
 
-	void finishLevel(bool success = false)
+	private void finishLevel(bool success = false)
 	{
 		if(!this.finished){
 			this.finished = true;
@@ -56,15 +63,19 @@ public class characterCollisions : MonoBehaviour {
 	}
 
 	private void finishSuccess(){
-		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().Move(Vector3.right * 10,false,true);
+		Time.timeScale = 0.3f;
+		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().Move(Vector3.up,false,true);
+		GameObject.Find("character").GetComponent<Rigidbody>().velocity = Vector3.zero;
+		this.setLevelFinished();
 	}
 
 	private void finishFail(){
-		while(true)
-		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().Move(Vector3.right * 10,true,false);
+		Time.timeScale = 0.3f;
+		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().enabled = false;
+		GameObject.Find("character").GetComponent<Rigidbody>().velocity = Vector3.zero;
 	}
 
-	void updateTime()
+	private void updateTime()
 	{
 		int time = (int)this.time - (int)Time.realtimeSinceStartup;
 
@@ -81,5 +92,13 @@ public class characterCollisions : MonoBehaviour {
 		{
 			GameObject.Find("time").GetComponent<TextMesh>().text = time.ToString();
 		}
+	}
+
+	private void setLevelFinished(){
+		PlayerPrefs.SetInt("lastLevel", Application.loadedLevel);
+	}
+
+	private int getLevel(){
+		return PlayerPrefs.GetInt("lastLevel");
 	}
 }
