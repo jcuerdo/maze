@@ -7,12 +7,12 @@ public class characterCollisions : MonoBehaviour {
 	private bool finished = false;
 	private bool instructions = false;
 
-	[SerializeField] int time = 15;
-	[SerializeField] int timeLow = 5;
+	[SerializeField] int timeLow;
+	[SerializeField] int time;
+
 
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
@@ -35,10 +35,11 @@ public class characterCollisions : MonoBehaviour {
 			GUIStyle button_style = new GUIStyle(GUI.skin.button);
 			button_style.fontSize = Screen.width/30;
 
-			GUI.Box(new Rect (Screen.width/4,Screen.height/4 - 5, Screen.width/2 , Screen.height/1.5f ), this.getLevel().ToString() );
+			GUI.Box(new Rect (Screen.width/4,Screen.height/4 - 5, Screen.width/2 , Screen.height/1.5f ), "Current Level: " + (this.getLevelFinished()).ToString() );
 
-			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), "Start Level",button_style )) 
+			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), "Start level",button_style )) 
 			{
+				Time.timeScale = 1f;
 				Application.LoadLevel(this.getLevel());
 			}
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8*2) + 20,Screen.width/2 - Screen.width/6,Screen.height/8), "Quit",button_style )) 
@@ -58,6 +59,7 @@ public class characterCollisions : MonoBehaviour {
 			else{
 				this.finishFail();
 			}
+
 		}
 
 	}
@@ -65,6 +67,7 @@ public class characterCollisions : MonoBehaviour {
 	private void finishSuccess(){
 		Time.timeScale = 0.3f;
 		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().Move(Vector3.up,false,true);
+		GameObject.Find("character").GetComponent<ThirdPersonCharacter>().enabled = false;
 		GameObject.Find("character").GetComponent<Rigidbody>().velocity = Vector3.zero;
 		this.setLevelFinished();
 	}
@@ -77,8 +80,7 @@ public class characterCollisions : MonoBehaviour {
 
 	private void updateTime()
 	{
-		int time = (int)this.time - (int)Time.realtimeSinceStartup;
-
+		int time = (int)this.time - (int)Time.timeSinceLevelLoad;
 		if(time < timeLow)
 		{
 			GameObject.Find("time").GetComponent<TextMesh>().color = Color.red;
@@ -95,7 +97,11 @@ public class characterCollisions : MonoBehaviour {
 	}
 
 	private void setLevelFinished(){
-		PlayerPrefs.SetInt("lastLevel", Application.loadedLevel);
+		PlayerPrefs.SetInt("lastLevel", Application.loadedLevel + 1);
+	}
+
+	private int getLevelFinished(){
+		return PlayerPrefs.GetInt("lastLevel", 0);
 	}
 
 	private int getLevel(){
