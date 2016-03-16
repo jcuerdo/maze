@@ -60,6 +60,7 @@ public class characterCollisions : MonoBehaviour {
 			this.getLevel(0,button_style,1,1);
 			this.getLevel(1,button_style,1,2);
 			this.getLevel(2,button_style,1,3);
+			this.getLevel(3,button_style,1,4);
 
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8*2) + 20,Screen.width/2 - Screen.width/6,Screen.height/8), "Back to menu",button_style )) 
 			{
