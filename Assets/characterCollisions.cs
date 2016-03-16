@@ -5,7 +5,7 @@ using UnityStandardAssets.Characters.ThirdPerson;
 public class characterCollisions : MonoBehaviour {
 
 	private bool finished = false;
-	private bool instructions = false;
+	private bool levels = false;
 
 	[SerializeField] int timeLow;
 	[SerializeField] int time;
@@ -13,7 +13,9 @@ public class characterCollisions : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+
 	}
+
 	
 	// Update is called once per frame
 	void Update () {
@@ -30,21 +32,38 @@ public class characterCollisions : MonoBehaviour {
 
 	void OnGUI()
 	{
-		if(finished)
-		{
-			GUIStyle button_style = new GUIStyle(GUI.skin.button);
-			button_style.fontSize = Screen.width/30;
+		GUIStyle button_style = new GUIStyle(GUI.skin.button);
+		button_style.fontSize = Screen.width/30;
 
+		if(finished && !levels)
+		{
 			GUI.Box(new Rect (Screen.width/4,Screen.height/4 - 5, Screen.width/2 , Screen.height/1.5f ), "Current Level: " + (this.getLevelFinished()).ToString() );
 
-			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), "Start level",button_style )) 
+			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), this.getNextLevelText() ,button_style )) 
 			{
 				Time.timeScale = 1f;
 				Application.LoadLevel(this.getLevel());
 			}
+			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) + 20,Screen.width/2 - Screen.width/6,Screen.height/8), "Levels",button_style )) 
+			{
+				this.levels = true;
+			}
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8*2) + 20,Screen.width/2 - Screen.width/6,Screen.height/8), "Quit",button_style )) 
 			{
 				Application.Quit();
+			}
+		}
+
+		if(levels)
+		{
+
+			this.getLevel(0,button_style,1,1);
+			this.getLevel(1,button_style,1,2);
+			this.getLevel(2,button_style,1,3);
+
+			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8*2) + 20,Screen.width/2 - Screen.width/6,Screen.height/8), "Back to menu",button_style )) 
+			{
+				this.levels = false;
 			}
 		}
 	}
@@ -62,6 +81,18 @@ public class characterCollisions : MonoBehaviour {
 
 		}
 
+	}
+
+	private void getLevel(int level, GUIStyle style, int row, int column){
+		if(level > this.getLevel())
+		{
+		//	return;
+		}
+		if( GUI.Button(new Rect( Screen.width/24 + (column*Screen.width/12),(row*Screen.height/9) + 20,Screen.width/4 - Screen.width/6,Screen.height/8), level.ToString(),style )) 
+		{
+			Time.timeScale = 1f;
+			Application.LoadLevel(level);
+		}
 	}
 
 	private void finishSuccess(){
@@ -106,5 +137,17 @@ public class characterCollisions : MonoBehaviour {
 
 	private int getLevel(){
 		return PlayerPrefs.GetInt("lastLevel");
+	}
+
+	private string getNextLevelText(){
+		string buttonText = "";
+		if(Application.loadedLevel == this.getLevelFinished()){
+			buttonText = "Restart level " + this.getLevelFinished();
+		}
+		else{
+			buttonText = "Start next level " + this.getLevelFinished();
+		}
+
+		return buttonText;
 	}
 }
