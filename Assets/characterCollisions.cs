@@ -86,7 +86,7 @@ public class characterCollisions : MonoBehaviour {
 	private void getLevel(int level, GUIStyle style, int row, int column){
 		if(level > this.getLevel())
 		{
-		//	return;
+			return;
 		}
 		if( GUI.Button(new Rect( Screen.width/24 + (column*Screen.width/12),(row*Screen.height/9) + 20,Screen.width/4 - Screen.width/6,Screen.height/8), level.ToString(),style )) 
 		{
