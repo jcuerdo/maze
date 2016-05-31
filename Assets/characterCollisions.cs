@@ -2,24 +2,27 @@
 using System.Collections;
 using UnityStandardAssets.Characters.ThirdPerson;
 
+
 public class characterCollisions : MonoBehaviour {
 
 	private bool finished = false;
 	private bool levels = false;
-
+	private AdMob admob;
 	[SerializeField] int timeLow;
 	[SerializeField] int time;
 
-
 	// Use this for initialization
 	void Start () {
-
+		this.admob = new AdMob();
+		this.admob.requestBanner();
+		this.admob.requestBannerInterstitial();
 	}
-
 	
 	// Update is called once per frame
 	void Update () {
-		this.updateTime();
+		if (!this.finished) {
+			this.updateTime();
+		}
 	}
 
 	void OnCollisionEnter(Collision collision)
@@ -35,14 +38,18 @@ public class characterCollisions : MonoBehaviour {
 		GUIStyle button_style = new GUIStyle(GUI.skin.button);
 		button_style.fontSize = Screen.width/30;
 
-		if(finished && !levels)
+		if(this.finished && !this.levels)
 		{
+			this.admob.showInterstitial();
+			this.admob.showBanners();
 			GUI.Box(new Rect (Screen.width/4,Screen.height/4 - 5, Screen.width/2 , Screen.height/1.5f ), "Current Level: " + (this.getLevelFinished()).ToString() );
 
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), this.getNextLevelText() ,button_style )) 
 			{
 				Time.timeScale = 1f;
-				Application.LoadLevel(this.getLevel());
+				this.finished = true;
+				this.admob.hideBanners();
+				Application.LoadLevel(this.getLastLevel());
 			}
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/4),Screen.width/2 - Screen.width/6,Screen.height/8), "Levels",button_style )) 
 			{
@@ -56,7 +63,6 @@ public class characterCollisions : MonoBehaviour {
 
 		if(levels)
 		{
-
 			this.getLevel(0,button_style,1,1);
 			this.getLevel(1,button_style,1,2);
 			this.getLevel(2,button_style,1,3);
@@ -73,6 +79,26 @@ public class characterCollisions : MonoBehaviour {
 		}
 	}
 
+	private void getLevel(int level, GUIStyle style, int row, int column){
+		if(level > this.getLastLevel())
+		{
+			GUIStyle unableStyle = new GUIStyle(GUI.skin.box);
+			unableStyle.normal.textColor = Color.gray;
+			unableStyle.fontSize = Screen.width/22;
+			if( GUI.Button(new Rect( Screen.width/24 + (column*Screen.width/12),(row*Screen.height/9) + 20,Screen.width/4 - Screen.width/6,Screen.height/8), level.ToString(),unableStyle)) 
+			{
+				
+			}
+		}
+		else if( GUI.Button(new Rect( Screen.width/24 + (column*Screen.width/12),(row*Screen.height/9) + 20,Screen.width/4 - Screen.width/6,Screen.height/8), level.ToString(),style)) 
+		{
+			Time.timeScale = 1f;
+			this.finished = true;
+			this.admob.hideBanners();
+			Application.LoadLevel(level);
+		}
+	}
+
 	private void finishLevel(bool success = false)
 	{
 		if(!this.finished){
@@ -86,24 +112,6 @@ public class characterCollisions : MonoBehaviour {
 
 		}
 
-	}
-
-	private void getLevel(int level, GUIStyle style, int row, int column){
-		if(level > this.getLevel())
-		{
-			GUIStyle unableStyle = new GUIStyle(GUI.skin.box);
-			unableStyle.normal.textColor = Color.gray;
-			unableStyle.fontSize = Screen.width/22;
-			if( GUI.Button(new Rect( Screen.width/24 + (column*Screen.width/12),(row*Screen.height/9) + 20,Screen.width/4 - Screen.width/6,Screen.height/8), level.ToString(),unableStyle)) 
-			{
-				
-			}
-		}
-		else if( GUI.Button(new Rect( Screen.width/24 + (column*Screen.width/12),(row*Screen.height/9) + 20,Screen.width/4 - Screen.width/6,Screen.height/8), level.ToString(),style)) 
-		{
-			Time.timeScale = 1f;
-			Application.LoadLevel(level);
-		}
 	}
 
 	private void finishSuccess(){
@@ -146,7 +154,7 @@ public class characterCollisions : MonoBehaviour {
 		return PlayerPrefs.GetInt("lastLevel", 0);
 	}
 
-	private int getLevel(){
+	private int getLastLevel(){
 		return PlayerPrefs.GetInt("lastLevel");
 	}
 
