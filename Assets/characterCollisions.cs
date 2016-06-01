@@ -7,6 +7,8 @@ public class characterCollisions : MonoBehaviour {
 
 	private bool finished = false;
 	private bool levels = false;
+	private bool banners = false;
+
 	private AdMob admob;
 	[SerializeField] int timeLow;
 	[SerializeField] int time;
@@ -22,6 +24,13 @@ public class characterCollisions : MonoBehaviour {
 	void Update () {
 		if (!this.finished) {
 			this.updateTime();
+		}
+		if(this.banners){
+			this.admob.showBanners();
+			this.admob.showInterstitial();
+		}
+		else{
+			this.admob.hideBanners();
 		}
 	}
 
@@ -40,15 +49,13 @@ public class characterCollisions : MonoBehaviour {
 
 		if(this.finished && !this.levels)
 		{
-			this.admob.showInterstitial();
-			this.admob.showBanners();
 			GUI.Box(new Rect (Screen.width/4,Screen.height/4 - 5, Screen.width/2 , Screen.height/1.5f ), "Current Level: " + (this.getLevelFinished()).ToString() );
 
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/8) ,Screen.width/2 - Screen.width/6,Screen.height/8), this.getNextLevelText() ,button_style )) 
 			{
 				Time.timeScale = 1f;
 				this.finished = true;
-				this.admob.hideBanners();
+				this.banners = false;
 				Application.LoadLevel(this.getLastLevel());
 			}
 			if( GUI.Button(new Rect( Screen.width/2 - Screen.width/6,Screen.height/4 + (Screen.height/4),Screen.width/2 - Screen.width/6,Screen.height/8), "Levels",button_style )) 
@@ -94,7 +101,7 @@ public class characterCollisions : MonoBehaviour {
 		{
 			Time.timeScale = 1f;
 			this.finished = true;
-			this.admob.hideBanners();
+			this.banners = false;
 			Application.LoadLevel(level);
 		}
 	}
@@ -103,6 +110,7 @@ public class characterCollisions : MonoBehaviour {
 	{
 		if(!this.finished){
 			this.finished = true;
+			this.banners = true;
 			if(success){
 				this.finishSuccess();
 			}
